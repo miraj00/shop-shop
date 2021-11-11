@@ -16,6 +16,9 @@ import {
 
 import Cart from '../components/Cart';
 
+import { idbPromise } from "../utils/helpers";
+
+
 function Detail() {
 
   // const { id } = useParams();
@@ -63,16 +66,31 @@ function Detail() {
   };
   
   useEffect(() => {
-      if (products.length) {
-        setCurrentProduct(products.find(product => product._id === id));
-      } 
-      else if (data) {
-        dispatch({
-          type: UPDATE_PRODUCTS,
-          products: data.products
-        });
-      }
-    }, [products, data, dispatch, id]);  
+  // already in global store
+  if (products.length) {
+    setCurrentProduct(products.find(product => product._id === id));
+  } 
+  // retrieved from server
+  else if (data) {
+    dispatch({
+      type: UPDATE_PRODUCTS,
+      products: data.products
+    });
+
+    data.products.forEach((product) => {
+      idbPromise('products', 'put', product);
+    });
+  }
+  // get cache from idb
+  else if (!loading) {
+    idbPromise('products', 'get').then((indexedProducts) => {
+      dispatch({
+        type: UPDATE_PRODUCTS,
+        products: indexedProducts
+      });
+    });
+  }
+}, [products, data, loading, dispatch, id]);
 
 
   return (

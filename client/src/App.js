@@ -19,6 +19,8 @@ import { StoreProvider } from "./utils/GlobalState";
 
 import OrderHistory from './pages/OrderHistory';
 
+import Success from "./pages/Success";
+
 const httpLink = createHttpLink({
   uri: '/graphql',
 });
@@ -50,6 +52,7 @@ function App() {
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
+            <Route exact path="/success" component={Success} />
             <Route exact path="/orderHistory" component={OrderHistory} />
             <Route exact path="/products/:id" component={Detail} />
             <Route component={NoMatch} />
